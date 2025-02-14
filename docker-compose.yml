@@ -1,0 +1,8 @@
+---
+version: '3.8'
+services:
+  myjen:
+    image: jenkins/jenkins
+    ports:
+      - 7070:8080
+...
