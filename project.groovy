@@ -1,7 +1,7 @@
 pipeline {
     agent any 
     environment {
-    DOCKERHUB_CREDENTIALS = credentials('sunnyramagir')
+    DOCKERHUB_CREDENTIALS = credentials('sunnyramagiri')
     }
     stages { 
         stage('SCM Checkout') {
@@ -25,10 +25,4 @@ pipeline {
                 sh 'docker push sunnyramagiri/nodeapp:$BUILD_NUMBER'
             }
         }
-}
-post {
-        always {
-            sh 'docker logout'
-        }
-    }
 }
