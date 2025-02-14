@@ -1,34 +1,34 @@
-pipeline{
-    agent any
+pipeline {
+    agent any 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials ('sunnyramagiri')
+    DOCKERHUB_CREDENTIALS = credentials('sunnyramagir')
     }
-    stages {
-        stage('SCM checkout') {
+    stages { 
+        stage('SCM Checkout') {
             steps{
-               git 'https://github.com/sunnyramagiri/youtubetab.git'
+            git 'https://github.com/sunnyramagiri/youtubetab.git'
             }
         }
-    }
-    stage('Build docker image') {
-        steps {
-            sh 'docker build -t name of the sunnramagiri/nodeapp:$BUILD_NUMBER .'
+
+        stage('Build docker image') {
+            steps {  
+                sh 'docker build -t valaxy/nodeapp:$BUILD_NUMBER .'
+            }
         }
-    }
-    stage ('login to dockerhub') {
-        steps{
-            sh 'echo $DOCKERHUB_CREDENTIALS_PWS | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+        stage('login to dockerhub') {
+            steps{
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            }
         }
-    }
-    stage('push image') {
-        stages{
-            sh 'docker push sunnyramagiri/nodeapp:$BUILD_NUMBER'
+        stage('push image') {
+            steps{
+                sh 'docker push sunnyramagiri/nodeapp:$BUILD_NUMBER'
+            }
         }
-    }
 }
 post {
-       always {
-           sh 'docker logout'}
+        always {
+            sh 'docker logout'
         }
     }
 }
