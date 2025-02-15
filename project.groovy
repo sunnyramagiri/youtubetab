@@ -1,28 +1,51 @@
 pipeline {
-    agent any 
+    agent any
+
     environment {
-    DOCKERHUB_CREDENTIALS = credentials('sunnyramagiri')
+        CREDENTIALS_ID = "sunnyramagiri"
     }
-    stages { 
-        stage('SCM Checkout') {
-            steps{
-            git 'https://github.com/sunnyramagiri/youtubetab.git'
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                
             }
         }
 
-        stage('Build docker image') {
-            steps {  
-                sh 'docker build -t valaxy/nodeapp:$BUILD_NUMBER .'
+        stage('Build Docker Image') {
+            steps {
+                sh "docker build -t ${wordpress}:${wordpress_TAG} ."
             }
         }
-        stage('login to dockerhub') {
-            steps{
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+
+        stage('Login to Docker Hub') {
+            steps {
+                echo "Logging into Docker Hub"
+                withCredentials([usernamePassword(credentialsId: CREDENTIALS_ID, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                    sh "echo $PASS | docker login -u $USER --password-stdin"
+                }
             }
         }
-        stage('push image') {
-            steps{
-                sh 'docker push sunnyramagiri/nodeapp:$BUILD_NUMBER'
+
+        stage('Push Docker Image') {
+            steps {
+                sh "docker push ${wordpress}:${wordpress}"
             }
         }
+
+        stage('Cleanup') {
+            steps {
+                sh "docker rmi ${wordpress}:${wordpress}"
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ WordPress Docker image pushed successfully!"
+        }
+        failure {
+            echo "❌ Pipeline failed! Check the logs."
+        }
+    }
 }
