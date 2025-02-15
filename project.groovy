@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                
+                git 'https://github.com/sunnyramagiri/youtubetab.git'
             }
         }
 
